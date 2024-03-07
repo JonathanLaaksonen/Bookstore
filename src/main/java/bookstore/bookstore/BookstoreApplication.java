@@ -15,8 +15,8 @@ public class BookstoreApplication {
     @Bean
     CommandLineRunner initDatabase(BookRepository repository) {
         return args -> {
-            repository.save(new Book("Title1", "Author1", 2000, "ISBN1", 19.99));
-            repository.save(new Book("Title2", "Author2", 2001, "ISBN2", 29.99));
+            repository.save(new Book("How to be boss", "Bossman", 2023, "ISBN1", 19.99));
+            repository.save(new Book("How to be hero", "Sankari", 2024, "ISBN2", 29.99));
             // Add as many books as you want here
         };
     }
