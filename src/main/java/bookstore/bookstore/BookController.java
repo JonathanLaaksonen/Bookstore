@@ -47,5 +47,15 @@ public class BookController {
 }
 return "redirect:/booklist";
 }
-
+@GetMapping("/edit/{id}")
+public String showEditBookForm(@PathVariable("id") Long bookId, Model model) {
+    Book book = bookRepository.findById(bookId).orElse(null);
+    model.addAttribute("book", book);
+    return "editbook";
+}
+@PostMapping("/editbook")
+public String editBook(@ModelAttribute Book book) {
+    bookRepository.save(book);
+    return "redirect:/booklist";
+}
 }
