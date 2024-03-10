@@ -2,13 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
     <title>Book List</title>
 </head>
 <body>
 
 <h1>Books</h1>
 
-<table>
+<table class="table table-striped">
+    >
     <tr>
         <th>Author</th>
         <th>Title</th>
@@ -21,8 +23,8 @@
         <td th:text="${book.isbn}"></td>
         <td th:text="${book.publicationYear}"></td>
         <td>
-            <a th:href="@{/edit/{id}(id=${book.id})}">Edit</a>
-            <a th:href="@{/delete/{id}(id=${book.id})}">Delete</a>
+            <button type="button" class="btn btn-primary" th:onclick="'window.location.href=\'' + @{/edit/{id}(id=${book.id})} + '\''">Edit</button>
+            <a th:href="@{/delete/{id}(id=${book.id})}" class="btn btn-danger">Delete</a>
         </td>
     </tr>
 </table>
