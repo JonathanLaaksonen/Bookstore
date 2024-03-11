@@ -24,26 +24,20 @@ public class BookstoreApplication {
     }
 
     @Bean
-    CommandLineRunner initDatabase() {
-        return args -> {
-           
-            log.info("Save some sample categories");
-            categoryRepository.save(new Category("Sci-Fi"));
-            categoryRepository.save(new Category("Comic"));
-            categoryRepository.save(new Category("Action"));
-           
-            log.info("Categories saved:");
-            categoryRepository.findAll().forEach(category -> log.info(category.toString()));
-
-            log.info("Save some sample books");
-            bookRepository.save(new Book("How to be boss", "Bossman", 2023, "ISBN1", 19.99));
-            bookRepository.save(new Book("How to be hero", "Sankari", 2024, "ISBN2", 29.99));
-            bookRepository.save(new Book("Taistelijat", "Superman", 2024, "ISBN3", 26.99));
-           
-            
-            log.info("Books saved:");
-            bookRepository.findAll().forEach(book -> log.info(book.toString()));
-        };
+CommandLineRunner initDatabase() {
+    return args -> {
+        Category sciFiCategory = categoryRepository.save(new Category("Sci-Fi"));
+        Category comicCategory = categoryRepository.save(new Category("Comic"));
+   
+        bookRepository.save(new Book("How to be boss", "Bossman", 2023, "ISBN1", 19.99, sciFiCategory));
+        bookRepository.save(new Book("How to be hero", "Sankari", 2024, "ISBN2", 29.99, comicCategory));
+     
+        log.info("Categories saved:");
+        categoryRepository.findAll().forEach(category -> log.info(category.toString()));
+        
+        log.info("Books saved:");
+        bookRepository.findAll().forEach(book -> log.info(book.toString()));
+    };
     }
 
 }

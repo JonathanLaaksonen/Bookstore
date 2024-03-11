@@ -1,9 +1,14 @@
 package bookstore.bookstore;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 
 @Entity
 public class Category {
@@ -12,10 +17,21 @@ public class Category {
     private Long categoryId;
     private String name;
 
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Book> books; 
+
     public Category() {}
 
     public Category(String name) {
         this.name = name;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 
     public Long getCategoryId() {
@@ -36,6 +52,6 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category [categoryId=" + categoryId + ", name=" + name + "]";
+        return "Category{id=" + categoryId + ", name=" + name + "}";
     }
 }
