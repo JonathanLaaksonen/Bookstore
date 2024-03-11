@@ -14,6 +14,10 @@ public class BookController {
     @Autowired
     private BookRepository bookRepository; 
 
+    @Autowired 
+    private CategoryRepository categoryRepository;
+
+
     @GetMapping("/") 
     public String index(Model model) {
         return "index"; 
@@ -28,8 +32,10 @@ public class BookController {
     @GetMapping("/addbook")
     public String showAddBookForm(Model model) {
         model.addAttribute("book", new Book());
+        model.addAttribute("categories", categoryRepository.findAll()); // Käytetään injektoitua repositoryä
         return "addbook";
-}
+    }
+
 @PostMapping("/addbook")
     public String addBook(@ModelAttribute Book book) {
         bookRepository.save(book);
