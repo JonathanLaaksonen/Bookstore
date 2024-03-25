@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
     <title>Book List</title>
 </head>
 <body>
+    <div sec:authorize="isAuthenticated()">
+        Logged in as: <span sec:authentication="name"></span>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Logout"/>
+        </form>
+    </div>
 
 <h1>Books</h1>
 
@@ -26,10 +32,11 @@
         <td th:text="${book.category?.name}">No Category</td>
         <td>
             <button type="button" class="btn btn-primary" th:onclick="'window.location.href=\'' + @{/edit/{id}(id=${book.id})} + '\''">Edit</button>
-            <a th:href="@{/delete/{id}(id=${book.id})}" class="btn btn-danger">Delete</a>
+            <a th:href="@{/delete/{id}(id=${book.id})}" sec:authorize="hasRole('ADMIN')" class="btn btn-danger">Delete</a>
         </td>
     </tr>
 </table>
 <a href="/addbook" class="btn btn-success">Add Book</a>
+
 </body>
 </html>

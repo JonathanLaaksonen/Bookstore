@@ -79,4 +79,14 @@ public @ResponseBody Book getBookById(@PathVariable Long id) {
     return bookRepository.findById(id).orElse(null);
 }
 
+@GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    // Tarkista, että tämä ei ohjaa itseään tai toista metodia, joka ohjaa takaisin tähän.
+    @GetMapping("/homepage")
+    public String homePage() {
+        return "index";  // Esimerkiksi tämä ohjaa etusivulle.
+    }
 }
