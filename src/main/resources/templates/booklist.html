@@ -6,10 +6,10 @@
     <title>Book List</title>
 </head>
 <body>
-    <div sec:authorize="isAuthenticated()">
-        Logged in as: <span sec:authentication="name"></span>
+    <div>
+        <span sec:authentication="name">Käyttäjä: </span>
         <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Logout"/>
+            <input type="submit" value="Logout" />
         </form>
     </div>
 
