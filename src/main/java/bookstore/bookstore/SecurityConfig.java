@@ -1,46 +1,54 @@
 package bookstore.bookstore;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
+
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        return new InMemoryUserDetailsManager(
-            org.springframework.security.core.userdetails.User.withUsername("user")
-                .password(encoder.encode("password"))
-                .roles("USER")
-                .build(),
-            org.springframework.security.core.userdetails.User.withUsername("admin")
-                .password(encoder.encode("password"))
-                .roles("ADMIN")
-                .build());
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-           
-            .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/api/**").permitAll() 
+            .authorizeHttpRequests(authz -> authz
+                .requestMatchers("/api/**").permitAll()
+                .requestMatchers("/delete/**").hasAuthority("ROLE_ADMIN") 
                 .anyRequest().authenticated()
             )
-            .formLogin(form -> form
-                .loginPage("/login")  // Määritä tämä käyttämään mukautettua kirjautumissivua
-                .defaultSuccessUrl("/homepage", true)  // Ohjaa käyttäjä tähän osoitteeseen onnistuneen kirjautumisen jälkeen
-                .permitAll()  // Salli pääsy kirjautumissivulle ilman autentikointia
-    )
-            .logout((logout) -> logout.permitAll());
+            .formLogin(formLogin -> formLogin
+                .loginPage("/login")
+                .defaultSuccessUrl("/homepage", true)
+                .permitAll()
+            )
+            .logout(logout -> logout.permitAll())
+            .httpBasic(Customizer.withDefaults())
+            .authenticationProvider(authenticationProvider());
 
         return http.build();
     }
